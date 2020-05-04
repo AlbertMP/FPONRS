@@ -15,7 +15,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.PersistableBundle;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -41,21 +40,22 @@ import static com.albert.fponrs.Tensorflow.MAXRSULT;
 import static com.albert.fponrs.Tensorflow.NUM_CLASSES2;
 import static com.albert.fponrs.Tensorflow.WIDTH;
 
-
 public class MainActivity extends Activity implements View.OnClickListener {
+
     public static final int PHOTO_REQUEST_CAREMA = 1;// 拍照
     public static final int CROP_PHOTO = 2;
     public static final int GET_PHOTO = 3;
-    //    public static final String labelfilename = "label.txt";
+
     public static final String labelfilename = "label.txt";
+
     private Button takePhoto;
-    private Button getPhono;
+    private Button getPhoto;
     private Button getClass;
     private Button cancel;
     private Button[] button = new Button[MAXRSULT];
     private Button dialog;
-    private ImageView pictureone;
-    private ImageView picturetwo;
+    private ImageView pictureReview;
+    private ImageView resultSample;
     private Uri imageUri;
     public static File tempFile;
     public ArrayList<String> labelname = new ArrayList<>();
@@ -69,7 +69,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         try {
             AssetManager am = getAssets();
             InputStream is = am.open(labelfilename);
-            labelname = readtxtfromAssets(is);
+            labelname = readTxtFromAssets(is);
             for (int i = 0; i < NUM_CLASSES2; i++) {
                 if (i < NUM_CLASSES2 - 1)
                     findlabel = findlabel + labelname.get(i) + "、";
@@ -80,15 +80,15 @@ public class MainActivity extends Activity implements View.OnClickListener {
             e.printStackTrace();
         }
         takePhoto = (Button) findViewById(R.id.take_photo);
-        getPhono = (Button) findViewById(R.id.get_photo);
+        getPhoto = (Button) findViewById(R.id.get_photo);
         getClass = (Button) findViewById(R.id.get_class);
         cancel = (Button) findViewById(R.id.cancel);
         dialog = (Button) findViewById(R.id.button3);
-        button[0] = (Button) findViewById(R.id.button0);
-        button[1] = (Button) findViewById(R.id.button1);
-        button[2] = (Button) findViewById(R.id.button2);
-        pictureone = (ImageView) findViewById(R.id.pictureone);
-        picturetwo = (ImageView) findViewById(R.id.picturetwo);
+        button[0] = (Button) findViewById(R.id.first);
+        button[1] = (Button) findViewById(R.id.second);
+        button[2] = (Button) findViewById(R.id.third);
+        pictureReview = (ImageView) findViewById(R.id.pictureReview);
+        resultSample = (ImageView) findViewById(R.id.resultSample);
         takePhoto.setOnClickListener(this);
         getClass.setOnClickListener(this);
         dialog.setOnClickListener(this);
@@ -97,7 +97,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         button[1].setVisibility(GONE);
         button[2].setVisibility(GONE);
         dialog.setText("查看可区分的种类");
-        getPhono.setOnClickListener(new View.OnClickListener() {
+        getPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
@@ -116,8 +116,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 openCamera(this);
                 break;
             case R.id.button3:
-                showDialog();
-                break;
             case R.id.get_class:
                 showDialog();
                 break;
@@ -158,12 +156,12 @@ public class MainActivity extends Activity implements View.OnClickListener {
                                 .openInputStream(imageUri));
                         bitmap = Bitmap.createScaledBitmap(bitmap, WIDTH, HEIGHT, false);
                         final String[][] result = tensorflow.recognize(bitmap, labelname);
-                        pictureone.setImageBitmap(bitmap);
+                        pictureReview.setImageBitmap(bitmap);
                         String showFlower =
                                 labelname.get(Integer.parseInt(result[0][1]));
                         int resID = getResources().getIdentifier(showFlower, "drawable", "com.albert.fponrs");
-                        picturetwo.setImageResource(resID);
-                        pictureone.setImageBitmap(bitmap);
+                        resultSample.setImageResource(resID);
+                        pictureReview.setImageBitmap(bitmap);
                         for (int i = 0; i < MAXRSULT; i++) {
                             button[i].setVisibility(View.VISIBLE);
                             button[i].setText(result[i][0]);
@@ -174,7 +172,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                                 String showFlower2 =
                                         labelname.get(Integer.parseInt(result[0][1]));
                                 int resID = getResources().getIdentifier(showFlower2, "drawable", "com.albert.fponrs");
-                                picturetwo.setImageResource(resID);
+                                resultSample.setImageResource(resID);
                             }
                         });
                         button[1].setOnClickListener(new View.OnClickListener() {
@@ -183,7 +181,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                                 String showFlower2 =
                                         labelname.get(Integer.parseInt(result[1][1]));
                                 int resID = getResources().getIdentifier(showFlower2, "drawable", "com.albert.fponrs");
-                                picturetwo.setImageResource(resID);
+                                resultSample.setImageResource(resID);
                             }
                         });
                         button[2].setOnClickListener(new View.OnClickListener() {
@@ -192,11 +190,11 @@ public class MainActivity extends Activity implements View.OnClickListener {
                                 String showFlower2 =
                                         labelname.get(Integer.parseInt(result[2][1]));
                                 int resID = getResources().getIdentifier(showFlower2, "drawable", "com.albert.fponrs");
-                                picturetwo.setImageResource(resID);
+                                resultSample.setImageResource(resID);
                             }
                         });
                         cancel.setVisibility(View.VISIBLE);
-                        picturetwo.setVisibility(View.VISIBLE);
+                        resultSample.setVisibility(View.VISIBLE);
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     }
@@ -209,12 +207,12 @@ public class MainActivity extends Activity implements View.OnClickListener {
                                 .openInputStream(imageUri));
                         bitmap = Bitmap.createScaledBitmap(bitmap, WIDTH, HEIGHT, false);
                         final String[][] result = tensorflow.recognize(bitmap, labelname);
-                        pictureone.setImageBitmap(bitmap);
+                        pictureReview.setImageBitmap(bitmap);
                         String showFlower =
                                 labelname.get(Integer.parseInt(result[0][1]));
                         int resID = getResources().getIdentifier(showFlower, "drawable", "com.albert.fponrs");
-                        picturetwo.setImageResource(resID);
-                        pictureone.setImageBitmap(bitmap);
+                        resultSample.setImageResource(resID);
+                        pictureReview.setImageBitmap(bitmap);
                         for (int i = 0; i < MAXRSULT; i++) {
                             button[i].setVisibility(View.VISIBLE);
                             button[i].setText(result[i][0]);
@@ -225,7 +223,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                                 String showFlower2 =
                                         labelname.get(Integer.parseInt(result[0][1]));
                                 int resID = getResources().getIdentifier(showFlower2, "drawable", "com.albert.fponrs");
-                                picturetwo.setImageResource(resID);
+                                resultSample.setImageResource(resID);
                             }
                         });
                         button[1].setOnClickListener(new View.OnClickListener() {
@@ -234,7 +232,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                                 String showFlower2 =
                                         labelname.get(Integer.parseInt(result[1][1]));
                                 int resID = getResources().getIdentifier(showFlower2, "drawable", "com.albert.fponrs");
-                                picturetwo.setImageResource(resID);
+                                resultSample.setImageResource(resID);
                             }
                         });
                         button[2].setOnClickListener(new View.OnClickListener() {
@@ -243,11 +241,11 @@ public class MainActivity extends Activity implements View.OnClickListener {
                                 String showFlower2 =
                                         labelname.get(Integer.parseInt(result[2][1]));
                                 int resID = getResources().getIdentifier(showFlower2, "drawable", "com.albert.fponrs");
-                                picturetwo.setImageResource(resID);
+                                resultSample.setImageResource(resID);
                             }
                         });
                         cancel.setVisibility(View.VISIBLE);
-                        picturetwo.setVisibility(View.VISIBLE);
+                        resultSample.setVisibility(View.VISIBLE);
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     }
@@ -257,7 +255,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     }
 
     public void openCamera(Activity activity) {
-        //獲取系統版本
+        // 获取系統版本
         int currentapiVersion = android.os.Build.VERSION.SDK_INT;
         // 激活相机
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -298,7 +296,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 Environment.MEDIA_MOUNTED);
     }
 
-    private ArrayList<String> readtxtfromAssets(InputStream is) throws Exception {
+    private ArrayList<String> readTxtFromAssets(InputStream is) throws Exception {
         InputStreamReader reader = new InputStreamReader(is, "UTF-8");
         BufferedReader bufferedReader = new BufferedReader(reader);
         ArrayList<String> buffer = new ArrayList<>();
@@ -312,6 +310,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
         super.onCreate(savedInstanceState, persistentState);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
     }
 }
