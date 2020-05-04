@@ -18,7 +18,7 @@ public class StartActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_start);
@@ -27,13 +27,9 @@ public class StartActivity extends Activity {
 
     private void initImage() {
         iv_start = (ImageView) findViewById(R.id.iv_start);
-        iv_start.setImageResource(R.drawable.start_flower);
-        RelativeLayout.LayoutParams params1 =
-                (RelativeLayout.LayoutParams) iv_start.getLayoutParams();
-        params1.setMargins(0, 250, 0, 0);
-        iv_start.setLayoutParams(params1);
+        iv_start.setImageResource(R.drawable.green_background);
         AlphaAnimation alphaAnimation = new AlphaAnimation(0.0f, 1.0f);
-        alphaAnimation.setDuration(4000);
+        alphaAnimation.setDuration(1000);
         alphaAnimation.setFillAfter(false);
         alphaAnimation.setAnimationListener(new Animation.AnimationListener() {
             @Override
