@@ -11,8 +11,8 @@ import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
-
 public class StartActivity extends Activity {
+
     private ImageView iv_start;
 
     @Override
@@ -25,6 +25,9 @@ public class StartActivity extends Activity {
         initImage();
     }
 
+    /*
+    启动画面
+     */
     private void initImage() {
         iv_start = (ImageView) findViewById(R.id.iv_start);
         iv_start.setImageResource(R.drawable.green_background);

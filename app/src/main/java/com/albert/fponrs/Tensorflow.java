@@ -72,11 +72,11 @@ public class Tensorflow {
         Trace.endSection();
         float[] newarray = new float[NUM_CLASSES2];
         for (int i = 0; i < NUM_CLASSES2; i++) newarray[i] = outputs2[i];
-        String[][] result = findtopthree(newarray, label);
+        String[][] result = findTopThree(newarray, label);
         return result;
     }
 
-    private String[][] findtopthree(float[] output, ArrayList<String> label) {
+    private String[][] findTopThree(float[] output, ArrayList<String> label) {
         int[] index = new int[MAXRSULT];
         String[][] result = new String[MAXRSULT][2];
         for (int j = 0; j < MAXRSULT; j++) {

@@ -139,6 +139,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Tensorflow tensorflow = new Tensorflow(getAssets());
 //        Log.i("", "模型加载成功");
+//        System.out.println(requestCode);
+//        System.out.println(resultCode);
         switch (requestCode) {
             case PHOTO_REQUEST_CAREMA:
                 if (resultCode == RESULT_OK) {
@@ -149,11 +151,15 @@ public class MainActivity extends Activity implements View.OnClickListener {
                     startActivityForResult(intent, CROP_PHOTO); // 启动裁剪程序
                 }
                 break;
+
             case GET_PHOTO:
                 if (resultCode == RESULT_OK) {
+
                     try {
+                        Uri imageUri = data.getData();
                         Bitmap bitmap = BitmapFactory.decodeStream(getContentResolver()
                                 .openInputStream(imageUri));
+                        System.out.println(imageUri);
                         bitmap = Bitmap.createScaledBitmap(bitmap, WIDTH, HEIGHT, false);
                         final String[][] result = tensorflow.recognize(bitmap, labelname);
                         pictureReview.setImageBitmap(bitmap);
@@ -200,6 +206,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                     }
                 }
                 break;
+
             case CROP_PHOTO:
                 if (resultCode == RESULT_OK) {
                     try {
